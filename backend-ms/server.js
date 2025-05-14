@@ -2,8 +2,16 @@ import express from "express";
 import dotenv from "dotenv";
 import demoRoutes from "./routes/demoRoutes.js";
 import cors from "cors";
+import { fileURLToPath } from "url";
+import path from "path";
 
 dotenv.config();
+
+// Estas dos líneas para que __dirname funcione con ES Modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+
 
 const app = express();
 const PORT = process.env.PORT || 4000;
@@ -18,6 +26,13 @@ app.use("/api", demoRoutes);
 
 app.get("/", (req, res) => {
   res.send("Demo MS2 Service is live");
+});
+
+// Servir los archivos estáticos del frontend
+app.use(express.static(path.join(__dirname, "../frontend-ms/dist")));
+
+app.use((req, res) => {
+  res.sendFile(path.resolve(__dirname, "../frontend-ms/dist", "index.html"));
 });
 
 app.listen(PORT, () => {
