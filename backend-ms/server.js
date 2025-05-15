@@ -11,8 +11,6 @@ dotenv.config();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-
-
 const app = express();
 const PORT = process.env.PORT || 4000;
 
@@ -29,10 +27,11 @@ app.get("/", (req, res) => {
 });
 
 // Servir los archivos estáticos del frontend
-app.use(express.static(path.join(__dirname, "../frontend-ms/dist")));
+// Servir React desde ./client/dist
+app.use(express.static(path.join(__dirname, "./client/dist")));
 
-app.use((req, res) => {
-  res.sendFile(path.resolve(__dirname, "../frontend-ms/dist", "index.html"));
+app.get("*", (req, res) => {
+  res.sendFile(path.resolve(__dirname, "./client/dist", "index.html"));
 });
 
 app.listen(PORT, () => {
