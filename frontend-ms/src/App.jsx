@@ -5,8 +5,13 @@ function App() {
   const [message, setMessage] = useState("");
 
   useEffect(() => {
-    fetch("http://localhost:4000/api/demo1")
-      .then((res) => res.text())
+    const baseUrl = import.meta.env.VITE_BACKEND_URL ?? "";
+
+    fetch(`${baseUrl}/api/demo1`)
+      .then((res) => {
+        if (!res.ok) throw new Error(res.statusText);
+        return res.text();
+      })
       .then((data) => setMessage(data))
       .catch(() =>
         setMessage("❌ Could not connect to demo microservice backend.")
