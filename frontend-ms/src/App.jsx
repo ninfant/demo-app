@@ -8,7 +8,7 @@ function App() {
 
   useEffect(() => {
     const baseUrl = import.meta.env.VITE_BACKEND_URL ?? "";
-    fetch(`${baseUrl}/bootdata`)
+    fetch(`${baseUrl}/api/bootdata`)
       .then((res) => {
         if (!res.ok) throw new Error("Bootdata fetch failed");
         return res.json();
