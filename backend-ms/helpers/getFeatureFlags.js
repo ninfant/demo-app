@@ -5,7 +5,7 @@ dotenv.config();
 
 const { MFF_API_URL, MFF_API_KEY, MFF_JWT } = process.env;
 
-export const checkFeatureEnabled = async (flagName) => {
+export const getFeatureFlags = async () => {
   try {
     const res = await axios.get(`${MFF_API_URL}/feature-flags`, {
       headers: {
@@ -14,8 +14,7 @@ export const checkFeatureEnabled = async (flagName) => {
       },
     });
 
-    const flag = res.data.find((f) => f.name === flagName);
-    return flag?.enabled === true;
+    return res.data;
   } catch (err) {
     console.error("❌ Error consulting MFF:", err.message);
     return false;

@@ -1,21 +1,24 @@
-import { checkFeatureEnabled } from "../helpers/checkFeatureEnabled.js";
+import { getFeatureFlags } from "../helpers/getFeatureFlags.js";
 
 export const bootDataHandler = async (req, res) => {
   try {
-    const flagsToCheck = ["demo1", "darkMode"];
+    const flagsNames = process.env.FEATURE_FLAGS_CONFIG.split(",");
 
-    const featureFlags = {};
+    const allFeatureFlags = await getFeatureFlags();
 
-    await Promise.all(
-      flagsToCheck.map(async (flag) => {
-        const enabled = await checkFeatureEnabled(flag);
-        featureFlags[flag] = enabled;
-      })
+    const filteredFeatureFlags = allFeatureFlags.reduce(
+      (result, featureFlag) => {
+        if (flagsNames.includes(featureFlag.name)) {
+          result[featureFlag.name] = featureFlag.enabled;
+        }
+        return result;
+      },
+      {}
     );
 
-    res.json({ featureFlags });
+    return res.json(filteredFeatureFlags);
   } catch (error) {
-    console.error("Error loading bootdata:", error.message);
-    res.status(400).json({ error: "Failed to load bootdata" });
+    console.error("Error loading bootdata:", error);
+    return res.status(400).json({ error: "Failed to load bootdata" });
   }
 };
